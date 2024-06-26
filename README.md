@@ -1,30 +1,26 @@
-# React + TypeScript + Vite
+Этот код представляет собой React-приложение, которое получает случайных пользователей из API и отображает их информацию.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+1. **Импорты и константы**:
+   - Импортируются необходимые функции и типы из React.
+   - Определяется URL для API, который предоставляет данные о пользователях.
 
-Currently, two official plugins are available:
+2. **Типы данных**:
+   - `Company` и `User` - типы, описывающие структуру данных о компании и пользователе соответственно.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+3. **Компоненты**:
+   - `Button`: функциональный компонент, который принимает функцию `onClick` и отображает кнопку с текстом "get random user". Этот компонент оптимизирован с помощью `React.memo` для предотвращения перерисовки, если функция `onClick` не изменилась.
+   - `UserInfo`: функциональный компонент, который принимает объект `user` и отображает информацию о пользователе в виде таблицы. Также оптимизирован с помощью `React.memo`.
 
-## Expanding the ESLint configuration
+4. **Хук `useThrottle`**:
+   - Этот хук реализует функциональность задержки вызова функции. Он использует `useState` для управления идентификатором таймера и `useCallback` для создания функции, которая будет вызываться с задержкой.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+5. **Компонент `App`**:
+   - Использует `useState` для управления состоянием `user` и `usersCache`.
+   - `useEffect` обновляет кэш пользователей каждый раз, когда обновляется `user`.
+   - Функция `receiveRandomUser` использует хук `useThrottle` для задержки запроса нового пользователя. Она генерирует случайный ID пользователя, проверяет, есть ли он уже в кэше, и запрашивает его из API, если он отсутствует.
+   - В `return` отображается заголовок, кнопка для получения случайных пользователей и информация о пользователе, если он существует.
 
-- Configure the top-level `parserOptions` property like this:
+6. **Экспорт компонента `App`**:
+   - Компонент `App` экспортируется как основной компонент приложения.
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Этот код демонстрирует использование различных функций и хуков React для создания интерактивного приложения, которое эффективно управляет состоянием и запросами к API.
