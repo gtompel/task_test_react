@@ -2,7 +2,8 @@
 'use client';
 
 import type { NextPage } from 'next';
-import { useState, useCallback, memo } from 'react';
+import { useState, useCallback, memo, useTransition } from 'react';
+
 
 interface Param {
   id: number;
@@ -25,7 +26,7 @@ interface Props {
   model: Model;
 }
 
-// Оптимизированный компонент TextInput
+
 const TextInput = memo(({ param, value, onChange }: {
   param: Param;
   value: string;
@@ -47,20 +48,25 @@ const TextInput = memo(({ param, value, onChange }: {
 
 const ParamEditor: React.FC<Props> = ({ params, model }) => {
   const [localModel, setLocalModel] = useState<Model>(model);
+  const [isPending, startTransition] = useTransition();
 
-  const handleParamChange = useCallback((paramId: number, value: string) => {
-    setLocalModel((prevModel) => {
-      const newParamValues = prevModel.paramValues.map((pv) => 
-        pv.paramId === paramId ? { ...pv, value } : pv
-      );
-      return { ...prevModel, paramValues: newParamValues };
+  const handleParamChange = (paramId: number, value: string) => {
+    startTransition(() => {
+      setLocalModel((prevModel) => {
+        const newParamValues = prevModel.paramValues.map((pv) => 
+          pv.paramId === paramId ? { ...pv, value } : pv
+        );
+        return { ...prevModel, paramValues: newParamValues };
+      });
     });
-  }, []);
+  };
+
 
   const getModel = useCallback(() => localModel, [localModel]);
 
   return (
     <div className="max-w-lg mx-auto p-4 border border-gray-200 rounded-lg">
+      {isPending && <div>Загрузка...</div>}
       {params.map((param) => {
         const value =
           localModel.paramValues.find((pv) => pv.paramId === param.id)?.value || '';
