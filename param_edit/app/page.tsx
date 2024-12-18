@@ -1,6 +1,8 @@
+/* eslint-disable react/display-name */
 'use client';
+
 import type { NextPage } from 'next';
-import { useState } from 'react';
+import { useState, useCallback, memo } from 'react';
 
 interface Param {
   id: number;
@@ -23,11 +25,12 @@ interface Props {
   model: Model;
 }
 
-const TextInput: React.FC<{
+// Оптимизированный компонент TextInput
+const TextInput = memo(({ param, value, onChange }: {
   param: Param;
   value: string;
   onChange: (paramId: number, value: string) => void;
-}> = ({ param, value, onChange }) => {
+}) => {
   return (
     <div className="flex items-center mb-4">
       <label htmlFor={`input-${param.id}`} className="w-40 text-right mr-2">{param.name}</label>
@@ -40,21 +43,21 @@ const TextInput: React.FC<{
       />
     </div>
   );
-};
+});
 
 const ParamEditor: React.FC<Props> = ({ params, model }) => {
   const [localModel, setLocalModel] = useState<Model>(model);
 
-  const handleParamChange = (paramId: number, value: string) => {
+  const handleParamChange = useCallback((paramId: number, value: string) => {
     setLocalModel((prevModel) => {
-      const newParamValues = prevModel.paramValues.map((pv) =>
+      const newParamValues = prevModel.paramValues.map((pv) => 
         pv.paramId === paramId ? { ...pv, value } : pv
       );
       return { ...prevModel, paramValues: newParamValues };
     });
-  };
+  }, []);
 
-  const getModel = () => localModel;
+  const getModel = useCallback(() => localModel, [localModel]);
 
   return (
     <div className="max-w-lg mx-auto p-4 border border-gray-200 rounded-lg">
