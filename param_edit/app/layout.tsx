@@ -1,16 +1,9 @@
+
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import "./globals.css"; // Подключаем глобальные стили
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// Используем Google Fonts для подключения Roboto
+const roboto = "https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap";
 
 export const metadata: Metadata = {
   title: "Главная |",
@@ -24,9 +17,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100 text-gray-800 transition-colors duration-300 ease-in-out min-h-screen flex flex-col`}
-      >
+      <head>
+        <link href={roboto} rel="stylesheet" />
+      </head>
+      <body className="antialiased bg-gray-100 text-gray-800 transition-colors duration-300 ease-in-out min-h-screen flex flex-col">
         <header className="bg-blue-600 text-white p-4 shadow-lg">
           <h1 className="text-2xl font-bold">Welcome to My App</h1>
         </header>
